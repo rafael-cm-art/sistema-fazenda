@@ -4,9 +4,25 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
+from flask import Flask, render_template, redirect
+
+app = Flask(__name__)
+
+
 @app.route("/")
 def home():
     return redirect("/login")
+
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
 app.secret_key = "123456"
 
 PRECO_LITRO = 2.5
