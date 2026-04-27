@@ -1,58 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Dashboard Fazenda</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Painel da Fazenda</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
             font-family: Arial;
-            padding: 15px;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 20px;
         }
 
         h1 {
-            color: #2e7d32;
-        }
-
-        form {
+            text-align: center;
             margin-bottom: 20px;
         }
 
-        input, select, button {
-            padding: 5px;
-            margin: 5px 0;
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
-        canvas {
-            max-width: 100%;
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c7be5;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 
 <body>
 
-<h1>🐄 Sistema da Fazenda</h1>
+<h1>🐄 Painel da Fazenda</h1>
 
-<a href="/logout">Sair</a> |
-<a href="/cadastro">Cadastrar Animal</a> |
-<a href="/relatorio">Relatório</a>
+<!-- CARDS -->
+<div class="cards">
 
-<hr>
+    <div class="card">
+        <h3>🥛 Total de Leite</h3>
+        <p>{{ total_leite }} L</p>
+    </div>
 
-<h2>Total de leite: {{ total_leite }} L</h2>
-<h2>Lucro estimado: R$ {{ lucro }}</h2>
+    <div class="card">
+        <h3>💰 Lucro Estimado</h3>
+        <p>R$ {{ lucro }}</p>
+    </div>
 
-<hr>
+    <div class="card">
+        <h3>🐄 Animais</h3>
+        <p>{{ animais }}</p>
+    </div>
 
-<h2>📈 Produção de Leite</h2>
+    <div class="card">
+        <h3>⚠️ Alertas</h3>
+        <p>{{ alertas }}</p>
+    </div>
 
-<canvas id="grafico"></canvas>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- GRÁFICO -->
+<div class="container">
+    <h2>📊 Produção de Leite</h2>
+    <canvas id="grafico"></canvas>
+</div>
 
 <script>
 const dados = {{ dados|tojson }};
-
 const labels = dados.map(d => d[0]);
 const valores = dados.map(d => d[1]);
 
@@ -61,62 +101,21 @@ new Chart(document.getElementById("grafico"), {
     data: {
         labels: labels,
         datasets: [{
-            label: "Produção de leite",
-            data: valores
+            label: "Litros de leite",
+            data: valores,
+            borderWidth: 3,
+            borderColor: "#2c7be5",
+            tension: 0.3
         }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: true }
+        }
     }
 });
 </script>
-
-<hr>
-
-<h2>🐄 Animais</h2>
-
-<ul>
-{% for a in animais %}
-<li>{{a[1]}} - {{a[2]}}</li>
-{% endfor %}
-</ul>
-
-<hr>
-
-<h2>🥛 Registrar Leite</h2>
-
-<form action="/leite" method="post">
-    Animal: <input name="animal">
-    Litros: <input name="litros">
-    <button>Salvar</button>
-</form>
-
-<hr>
-
-<h2>⚖️ Registrar Peso</h2>
-
-<form action="/peso" method="post">
-    Animal: <input name="animal">
-    Peso: <input name="peso">
-    <button>Salvar</button>
-</form>
-
-<hr>
-
-<h2>💉 Registrar Vacina</h2>
-
-<form action="/vacina" method="post">
-    Animal: <input name="animal">
-    Vacina: <input name="vacina">
-    <button>Salvar</button>
-</form>
-
-<hr>
-
-<h2>🚨 Alertas de Vacinação</h2>
-
-<ul>
-{% for a in alertas %}
-<li>⚠️ {{a[0]}} - {{a[1]}} vence em {{a[2]}}</li>
-{% endfor %}
-</ul>
 
 </body>
 </html>
