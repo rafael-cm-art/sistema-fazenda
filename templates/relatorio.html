@@ -1,0 +1,9 @@
+<h2>Relatório Mensal de Leite</h2>
+
+<ul>
+{% for d in dados %}
+<li>{{d[0]}} - {{d[1]}} litros</li>
+{% endfor %}
+</ul>
+
+<a href="/dashboard">Voltar</a>
