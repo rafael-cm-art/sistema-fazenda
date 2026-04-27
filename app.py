@@ -47,6 +47,14 @@ def dashboard():
         lucro=lucro
     )
 
+@app.route("/cadastro")
+def cadastro():
+    return render_template("cadastro.html")
+
+
+@app.route("/relatorio")
+def relatorio():
+    return render_template("relatorio.html")
 
 # ---------------- PORTA (RENDER) ----------------
 if __name__ == "__main__":
