@@ -3,6 +3,10 @@ import sqlite3
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return redirect("/login")
 app.secret_key = "123456"
 
 PRECO_LITRO = 2.5
