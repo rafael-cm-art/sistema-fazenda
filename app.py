@@ -47,6 +47,12 @@ def login():
         usuario = request.form["usuario"]
         senha = request.form["senha"]
 
+        # 🔐 ADMIN FIXO
+        if usuario == "admin" and senha == "123":
+            session["usuario"] = usuario
+            return redirect("/dashboard")
+
+        # 🔎 FUNCIONÁRIOS DO BANCO
         conn = conectar()
         cursor = conn.cursor()
 
