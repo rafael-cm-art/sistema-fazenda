@@ -70,9 +70,9 @@ def login():
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
 def dashboard():
-    
+
     if "usuario" not in session:
-    return redirect("/login")
+        return redirect("/login")
 
     conn = conectar()
     cursor = conn.cursor()
@@ -89,12 +89,6 @@ def dashboard():
         total_leite=total_leite,
         lucro=lucro
     )
-
-
-# ---------------- CADASTRO ANIMAIS ----------------
-@app.route("/cadastro")
-def cadastro():
-    return render_template("cadastro.html")
 
 
 # ---------------- RELATORIO ----------------
