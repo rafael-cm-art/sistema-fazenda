@@ -44,7 +44,25 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        return redirect("/dashboard")
+        usuario = request.form["usuario"]
+        senha = request.form["senha"]
+
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT * FROM funcionarios
+            WHERE usuario=? AND senha=?
+        """, (usuario, senha))
+
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
+            session["usuario"] = usuario
+            return redirect("/dashboard")
+        else:
+            return "Usuário ou senha inválidos"
 
     return render_template("login.html")
 
@@ -52,6 +70,9 @@ def login():
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
 def dashboard():
+    
+    if "usuario" not in session:
+    return redirect("/login")
 
     conn = conectar()
     cursor = conn.cursor()
