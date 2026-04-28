@@ -13,17 +13,39 @@ def conectar():
     return sqlite3.connect("banco.db")
 
 
+# cria tabelas automaticamente
+def criar_tabelas():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS funcionarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT,
+        usuario TEXT,
+        senha TEXT
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+criar_tabelas()
+
+
 # ---------------- ROTA INICIAL ----------------
 @app.route("/")
 def home():
     return redirect("/login")
 
 
-# ---------------- LOGIN ----------------
+# ---------------- LOGIN (SIMPLES POR ENQUANTO) ----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         return redirect("/dashboard")
+
     return render_template("login.html")
 
 
@@ -47,14 +69,45 @@ def dashboard():
         lucro=lucro
     )
 
+
+# ---------------- CADASTRO ANIMAIS ----------------
 @app.route("/cadastro")
 def cadastro():
     return render_template("cadastro.html")
 
 
+# ---------------- RELATORIO ----------------
 @app.route("/relatorio")
 def relatorio():
     return render_template("relatorio.html")
+
+
+# ---------------- FUNCIONARIOS ----------------
+@app.route("/funcionarios", methods=["GET", "POST"])
+def funcionarios():
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        nome = request.form["nome"]
+        usuario = request.form["usuario"]
+        senha = request.form["senha"]
+
+        cursor.execute("""
+        INSERT INTO funcionarios (nome, usuario, senha)
+        VALUES (?, ?, ?)
+        """, (nome, usuario, senha))
+
+        conn.commit()
+
+    cursor.execute("SELECT * FROM funcionarios")
+    dados = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("funcionarios.html", dados=dados)
+
 
 # ---------------- PORTA (RENDER) ----------------
 if __name__ == "__main__":

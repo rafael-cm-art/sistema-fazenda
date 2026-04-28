@@ -1,0 +1,18 @@
+<h2>Funcionários</h2>
+
+<form method="POST">
+    Nome: <input name="nome"><br>
+    Usuário: <input name="usuario"><br>
+    Senha: <input name="senha"><br>
+    <button>Salvar</button>
+</form>
+
+<hr>
+
+<h3>Lista</h3>
+
+<ul>
+{% for f in dados %}
+    <li>{{ f[1] }} - {{ f[2] }}</li>
+{% endfor %}
+</ul>
