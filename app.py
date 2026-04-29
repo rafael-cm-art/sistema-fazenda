@@ -149,6 +149,9 @@ def salvar():
 
 @app.route("/excluir_funcionario/<int:id>")
 def excluir_funcionario(id):
+    if session.get("usuario") != "admin":
+        return "Acesso negado"
+
     conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
@@ -207,11 +210,17 @@ def relatorio():
 # ---------------- FUNCIONARIOS ----------------
 @app.route("/funcionarios", methods=["GET", "POST"])
 def funcionarios():
+    if "usuario" not in session:
+        return redirect("/login")
 
-    conn = conectar()
+    conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
     if request.method == "POST":
+        # só admin pode cadastrar
+        if session.get("usuario") != "admin":
+            return "Acesso negado"
+
         nome = request.form["nome"]
         usuario = request.form["usuario"]
         senha = request.form["senha"]

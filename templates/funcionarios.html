@@ -1,11 +1,13 @@
 <h2>Funcionários</h2>
 
+{% if session["usuario"] == "admin" %}
 <form method="POST">
     Nome: <input name="nome"><br>
     Usuário: <input name="usuario"><br>
     Senha: <input name="senha"><br>
     <button>Salvar</button>
 </form>
+{% endif %}
 
 <hr>
 
@@ -16,10 +18,13 @@
     <li>
         {{ f[1] }} - {{ f[2] }}
 
+        {% if session["usuario"] == "admin" %}
         <a href="/excluir_funcionario/{{ f[0] }}" 
            onclick="return confirm('Tem certeza que deseja excluir?')">
            ❌ Excluir
         </a>
+        {% endif %}
+
     </li>
 {% endfor %}
 </ul>
