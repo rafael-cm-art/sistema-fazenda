@@ -21,22 +21,6 @@ conn.commit()
 conn.close()
 app.secret_key = "123456"
 
-conn = sqlite3.connect("banco.db")
-cursor = conn.cursor()
-
-# tenta criar as colunas (se já existirem, ignora)
-try:
-    cursor.execute("ALTER TABLE animais ADD COLUMN brinco TEXT")
-except:
-    pass
-
-try:
-    cursor.execute("ALTER TABLE animais ADD COLUMN sexo TEXT")
-except:
-    pass
-
-conn.commit()
-conn.close()
 
 PRECO_LITRO = 2.5
 
@@ -140,6 +124,26 @@ def anotar(animal_id):
         INSERT INTO anotacoes (animal_id, texto, data)
         VALUES (?, ?, ?)
     """, (animal_id, texto, data))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/cadastro")
+
+@app.route("/salvar", methods=["POST"])
+def salvar():
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+
+    nome = request.form["nome"]
+    tipo = request.form["tipo"]
+    brinco = request.form["brinco"]
+    sexo = request.form["sexo"]
+
+    cursor.execute("""
+        INSERT INTO animais (nome, tipo, brinco, sexo)
+        VALUES (?, ?, ?, ?)
+    """, (nome, tipo, brinco, sexo))
 
     conn.commit()
     conn.close()

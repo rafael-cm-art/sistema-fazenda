@@ -1,37 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Cadastro</title>
-</head>
-<body>
-
-<h2>Cadastrar Animal</h2>
-
-<!-- FORM DE CADASTRO -->
-<form action="/salvar" method="post">
-    Nome: <input name="nome"><br>
-
-    Tipo:
-    <select name="tipo">
-        <option value="leite">Leite</option>
-        <option value="corte">Corte</option>
-    </select><br>
-
-    <button>Salvar</button>
-</form>
-
-<hr>
-
-<h3>Animais cadastrados:</h3>
-
-<ul>
 {% for animal in animais %}
     <li>
-        <b>{{ animal[1] }}</b> ({{ animal[2] }})
+        <b>{{ animal[1] }}</b> ({{ animal[2] }}) 
+        - 🏷️ {{ animal[3] if animal|length > 3 else "" }} 
+        - ⚥ {{ animal[4] if animal|length > 4 else "" }}
 
-        <a href="/excluir/{{ animal[0] }}" onclick="return confirm('Tem certeza?')">❌ Excluir</a>
+        <!-- BOTÃO EXCLUIR -->
+        <a href="/excluir/{{ animal[0] }}" 
+           onclick="return confirm('Tem certeza que deseja excluir este animal?')">
+           ❌ Excluir
+        </a>
 
-        <!-- FORM DE ANOTAÇÃO (AGORA NO LUGAR CERTO) -->
+        <!-- FORM DE ANOTAÇÃO -->
         <form action="/anotar/{{ animal[0] }}" method="post">
             <input name="texto" placeholder="Ex: morreu, doente...">
             <button>Salvar</button>
@@ -48,9 +27,3 @@
 
     </li>
 {% endfor %}
-</ul>
-
-<a href="/dashboard">Voltar</a>
-
-</body>
-</html>
