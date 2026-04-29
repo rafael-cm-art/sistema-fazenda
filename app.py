@@ -5,18 +5,6 @@ import os
 app = Flask(__name__)
 import sqlite3
 
-conn = sqlite3.connect("banco.db")
-cursor = conn.cursor()
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS anotacoes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    animal_id INTEGER,
-    texto TEXT,
-    data TEXT
-)
-""")
-
 conn.commit()
 conn.close()
 app.secret_key = "123456"
@@ -99,7 +87,6 @@ def cadastro():
     cursor.execute("SELECT * FROM animais")
     animais = cursor.fetchall()
 
-    # evita erro se tabela ainda não existir
     try:
         cursor.execute("SELECT * FROM anotacoes")
         anotacoes = cursor.fetchall()
