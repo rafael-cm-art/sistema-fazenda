@@ -12,6 +12,34 @@
     <button>Salvar</button>
 </form>
 
+<hr>
+
+<h3>Animais cadastrados:</h3>
+
+<ul>
+{% for animal in animais %}
+    <li>
+        {{ animal[1] }} - {{ animal[2] }}
+
+        <!-- ANOTAÇÃO -->
+        <form action="/anotar/{{ animal[0] }}" method="post">
+            <input name="texto" placeholder="Ex: morreu, doente...">
+            <button>Salvar</button>
+        </form>
+
+        <!-- LISTA DE ANOTAÇÕES -->
+        <ul>
+        {% for anot in anotacoes %}
+            {% if anot[1] == animal[0] %}
+                <li>{{ anot[3] }} - {{ anot[2] }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+
+    </li>
+{% endfor %}
+</ul>
+
 <ul>
 {% for anot in anotacoes %}
     {% if anot[1] == animal[0] %}
