@@ -21,6 +21,23 @@ conn.commit()
 conn.close()
 app.secret_key = "123456"
 
+conn = sqlite3.connect("banco.db")
+cursor = conn.cursor()
+
+# tenta criar as colunas (se já existirem, ignora)
+try:
+    cursor.execute("ALTER TABLE animais ADD COLUMN brinco TEXT")
+except:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE animais ADD COLUMN sexo TEXT")
+except:
+    pass
+
+conn.commit()
+conn.close()
+
 PRECO_LITRO = 2.5
 
 
