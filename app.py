@@ -3,20 +3,37 @@ import sqlite3
 import os
 
 app = Flask(__name__)
+import sqlite3
+
+conn = sqlite3.connect("banco.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS anotacoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    animal_id INTEGER,
+    texto TEXT,
+    data TEXT
+)
+""")
+
+conn.commit()
+conn.close()
 app.secret_key = "123456"
 
 PRECO_LITRO = 2.5
 
+
+# ---------------- BANCO ----------------
 def conectar():
     return sqlite3.connect("banco.db")
 
 
-# ---------------- BANCO ----------------
+# cria tabelas automaticamente
 def criar_tabelas():
     conn = conectar()
     cursor = conn.cursor()
 
-    # FUNCIONÁRIOS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS funcionarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,30 +43,11 @@ def criar_tabelas():
     )
     """)
 
-    # ANIMAIS
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS animais (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT,
-        tipo TEXT,
-        brinco TEXT,
-        sexo TEXT
-    )
-    """)
-
-    # ANOTAÇÕES
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS anotacoes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        animal_id INTEGER,
-        texto TEXT,
-        data TEXT
-    )
-    """)
-
     conn.commit()
     conn.close()
 
+
+criar_tabelas()
 
 
 # ---------------- ROTA INICIAL ----------------
@@ -92,67 +90,57 @@ def login():
 
 
 # ---------------- DASHBOARD ----------------
-def criar_tabelas():
-    conn = conectar()
+@app.route("/cadastro")
+def cadastro():
+    conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
-    # FUNCIONÁRIOS
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS funcionarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT,
-        usuario TEXT,
-        senha TEXT
-    )
-    """)
+    cursor.execute("SELECT * FROM animais")
+    animais = cursor.fetchall()
 
-    # ANIMAIS
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS animais (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT,
-        tipo TEXT,
-        brinco TEXT,
-        sexo TEXT
-    )
-    """)
+    # evita erro se tabela ainda não existir
+    try:
+        cursor.execute("SELECT * FROM anotacoes")
+        anotacoes = cursor.fetchall()
+    except:
+        anotacoes = []
 
-    # ANOTAÇÕES
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS anotacoes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        animal_id INTEGER,
-        texto TEXT,
-        data TEXT
-    )
-    """)
+    conn.close()
 
-    # TABELA LEITE
+    return render_template("cadastro.html", animais=animais, anotacoes=anotacoes)
+
+from datetime import datetime
+
+@app.route("/anotar/<int:animal_id>", methods=["POST"])
+def anotar(animal_id):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+
+    texto = request.form["texto"]
+    data = datetime.now().strftime("%d/%m/%Y")
+
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS leite (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        data TEXT,
-        litros REAL
-    )
-    """)
+        INSERT INTO anotacoes (animal_id, texto, data)
+        VALUES (?, ?, ?)
+    """, (animal_id, texto, data))
 
     conn.commit()
     conn.close()
 
+    return redirect("/cadastro")
+
 @app.route("/salvar", methods=["POST"])
 def salvar():
-    conn = sqlite3.connect("banco.db")
+    conn = conectar()
     cursor = conn.cursor()
 
     nome = request.form["nome"]
     tipo = request.form["tipo"]
-    brinco = request.form["brinco"]
-    sexo = request.form["sexo"]
 
     cursor.execute("""
-        INSERT INTO animais (nome, tipo, brinco, sexo)
-        VALUES (?, ?, ?, ?)
-    """, (nome, tipo, brinco, sexo))
+        INSERT INTO animais (nome, tipo)
+        VALUES (?, ?)
+    """, (nome, tipo))
 
     conn.commit()
     conn.close()
@@ -255,4 +243,4 @@ def funcionarios():
 # ---------------- PORTA (RENDER) ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port)
