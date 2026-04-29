@@ -147,6 +147,22 @@ def salvar():
 
     return redirect("/cadastro")
 
+@app.route("/excluir/<int:id>")
+def excluir(id):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+
+    # apaga anotações do animal primeiro
+    cursor.execute("DELETE FROM anotacoes WHERE animal_id = ?", (id,))
+
+    # depois apaga o animal
+    cursor.execute("DELETE FROM animais WHERE id = ?", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/cadastro")
+
 @app.route("/dashboard")
 def dashboard():
 

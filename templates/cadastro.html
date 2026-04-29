@@ -29,6 +29,8 @@
     <li>
         <b>{{ animal[1] }}</b> ({{ animal[2] }})
 
+        <a href="/excluir/{{ animal[0] }}" onclick="return confirm('Tem certeza?')">❌ Excluir</a>
+
         <!-- FORM DE ANOTAÇÃO (AGORA NO LUGAR CERTO) -->
         <form action="/anotar/{{ animal[0] }}" method="post">
             <input name="texto" placeholder="Ex: morreu, doente...">
