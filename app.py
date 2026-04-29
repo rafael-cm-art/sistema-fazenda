@@ -3,6 +3,22 @@ import sqlite3
 import os
 
 app = Flask(__name__)
+import sqlite3
+
+conn = sqlite3.connect("banco.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS anotacoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    animal_id INTEGER,
+    texto TEXT,
+    data TEXT
+)
+""")
+
+conn.commit()
+conn.close()
 app.secret_key = "123456"
 
 PRECO_LITRO = 2.5
@@ -76,7 +92,38 @@ def login():
 # ---------------- DASHBOARD ----------------
 @app.route("/cadastro")
 def cadastro():
-    return render_template("cadastro.html")
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM animais")
+    animais = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM anotacoes")
+    anotacoes = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("cadastro.html", animais=animais, anotacoes=anotacoes)
+
+from datetime import datetime
+
+@app.route("/anotar/<int:animal_id>", methods=["POST"])
+def anotar(animal_id):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+
+    texto = request.form["texto"]
+    data = datetime.now().strftime("%d/%m/%Y")
+
+    cursor.execute("""
+        INSERT INTO anotacoes (animal_id, texto, data)
+        VALUES (?, ?, ?)
+    """, (animal_id, texto, data))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/cadastro")
 
 @app.route("/salvar", methods=["POST"])
 def salvar():

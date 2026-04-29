@@ -7,6 +7,19 @@
 
 <h2>Cadastrar Animal</h2>
 
+<form action="/anotar/{{ animal[0] }}" method="post">
+    <input name="texto" placeholder="Ex: morreu, doente...">
+    <button>Salvar</button>
+</form>
+
+<ul>
+{% for anot in anotacoes %}
+    {% if anot[1] == animal[0] %}
+        <li>{{ anot[3] }} - {{ anot[2] }}</li>
+    {% endif %}
+{% endfor %}
+</ul>
+
 <form action="/salvar" method="post">
     Nome: <input name="nome"><br>
     Tipo:
