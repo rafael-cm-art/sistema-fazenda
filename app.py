@@ -147,6 +147,18 @@ def salvar():
 
     return redirect("/cadastro")
 
+@app.route("/excluir_funcionario/<int:id>")
+def excluir_funcionario(id):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM funcionarios WHERE id = ?", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/funcionarios")
+
 @app.route("/excluir/<int:id>")
 def excluir(id):
     conn = sqlite3.connect("banco.db")
