@@ -92,43 +92,43 @@ def login():
 
 
 # ---------------- DASHBOARD ----------------
-@app.route("/cadastro")
-def cadastro():
-    conn = sqlite3.connect("banco.db")
+def criar_tabelas():
+    conn = conectar()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM animais")
-    animais = cursor.fetchall()
-
-    try:
-        cursor.execute("SELECT * FROM anotacoes")
-        anotacoes = cursor.fetchall()
-    except:
-        anotacoes = []
-
-    conn.close()
-
-    return render_template("cadastro.html", animais=animais, anotacoes=anotacoes)
-
-from datetime import datetime
-
-@app.route("/anotar/<int:animal_id>", methods=["POST"])
-def anotar(animal_id):
-    conn = sqlite3.connect("banco.db")
-    cursor = conn.cursor()
-
-    texto = request.form["texto"]
-    data = datetime.now().strftime("%d/%m/%Y")
-
+    # FUNCIONÁRIOS
     cursor.execute("""
-        INSERT INTO anotacoes (animal_id, texto, data)
-        VALUES (?, ?, ?)
-    """, (animal_id, texto, data))
+    CREATE TABLE IF NOT EXISTS funcionarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT,
+        usuario TEXT,
+        senha TEXT
+    )
+    """)
+
+    # ANIMAIS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS animais (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT,
+        tipo TEXT,
+        brinco TEXT,
+        sexo TEXT
+    )
+    """)
+
+    # ANOTAÇÕES
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS anotacoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        animal_id INTEGER,
+        texto TEXT,
+        data TEXT
+    )
+    """)
 
     conn.commit()
     conn.close()
-
-    return redirect("/cadastro")
 
 @app.route("/salvar", methods=["POST"])
 def salvar():
@@ -246,4 +246,4 @@ def funcionarios():
 # ---------------- PORTA (RENDER) ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
