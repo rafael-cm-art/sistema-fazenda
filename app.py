@@ -98,7 +98,7 @@ def cadastro():
     cursor.execute("SELECT * FROM animais")
     animais = cursor.fetchall()
 
-    # 🔒 evita erro se tabela não existir
+    # evita erro se tabela ainda não existir
     try:
         cursor.execute("SELECT * FROM anotacoes")
         anotacoes = cursor.fetchall()
