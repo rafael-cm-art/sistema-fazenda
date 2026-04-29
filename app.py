@@ -150,24 +150,6 @@ def salvar():
 
     return redirect("/cadastro")
 
-@app.route("/salvar", methods=["POST"])
-def salvar():
-    conn = conectar()
-    cursor = conn.cursor()
-
-    nome = request.form["nome"]
-    tipo = request.form["tipo"]
-
-    cursor.execute("""
-        INSERT INTO animais (nome, tipo)
-        VALUES (?, ?)
-    """, (nome, tipo))
-
-    conn.commit()
-    conn.close()
-
-    return redirect("/cadastro")
-
 @app.route("/excluir_funcionario/<int:id>")
 def excluir_funcionario(id):
     if session.get("usuario") != "admin":
