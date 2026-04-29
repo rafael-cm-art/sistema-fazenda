@@ -1,0 +1,15 @@
+[33m58bd835[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m dashboard atualizado
+[33m4f99598[m add logout
+[33m2159b16[m add menu funcionarios
+[33mc3af86a[m login admin + funcionarios
+[33mdeaf041[m corrigindo indentacao
+[33ma4aee8e[m login real com funcionarios
+[33m37e0788[m add funcionarios
+[33md167264[m adiciona rotas cadastro e relatorio
+[33m85fb617[m atualiza dashboard e estilo
+[33mb4842bb[m corrige rotas duplicadas login
+[33m40364f1[m adiciona rota login
+[33m7b37101[m adiciona rota home
+[33m97714bc[m corrige requirements e procfile
+[33m7d7d089[m corrigindo porta render
+[33m30f3130[m primeiro upload

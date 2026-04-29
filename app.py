@@ -74,6 +74,28 @@ def login():
 
 
 # ---------------- DASHBOARD ----------------
+@app.route("/cadastro")
+def cadastro():
+    return render_template("cadastro.html")
+
+@app.route("/salvar", methods=["POST"])
+def salvar():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    nome = request.form["nome"]
+    tipo = request.form["tipo"]
+
+    cursor.execute("""
+        INSERT INTO animais (nome, tipo)
+        VALUES (?, ?)
+    """, (nome, tipo))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/cadastro")
+
 @app.route("/dashboard")
 def dashboard():
 
