@@ -127,6 +127,15 @@ def criar_tabelas():
     )
     """)
 
+    # TABELA LEITE
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS leite (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        data TEXT,
+        litros REAL
+    )
+    """)
+
     conn.commit()
     conn.close()
 
