@@ -7,8 +7,16 @@
 
 <h2>Cadastrar Animal</h2>
 
-<form action="/anotar/{{ animal[0] }}" method="post">
-    <input name="texto" placeholder="Ex: morreu, doente...">
+<!-- FORM DE CADASTRO -->
+<form action="/salvar" method="post">
+    Nome: <input name="nome"><br>
+
+    Tipo:
+    <select name="tipo">
+        <option value="leite">Leite</option>
+        <option value="corte">Corte</option>
+    </select><br>
+
     <button>Salvar</button>
 </form>
 
@@ -19,9 +27,9 @@
 <ul>
 {% for animal in animais %}
     <li>
-        {{ animal[1] }} - {{ animal[2] }}
+        <b>{{ animal[1] }}</b> ({{ animal[2] }})
 
-        <!-- ANOTAÇÃO -->
+        <!-- FORM DE ANOTAÇÃO (AGORA NO LUGAR CERTO) -->
         <form action="/anotar/{{ animal[0] }}" method="post">
             <input name="texto" placeholder="Ex: morreu, doente...">
             <button>Salvar</button>
@@ -40,25 +48,7 @@
 {% endfor %}
 </ul>
 
-<ul>
-{% for anot in anotacoes %}
-    {% if anot[1] == animal[0] %}
-        <li>{{ anot[3] }} - {{ anot[2] }}</li>
-    {% endif %}
-{% endfor %}
-</ul>
-
-<form action="/salvar" method="post">
-    Nome: <input name="nome"><br>
-    Tipo:
-    <select name="tipo">
-        <option value="leite">Leite</option>
-        <option value="corte">Corte</option>
-    </select><br>
-    <button>Salvar</button>
-</form>
-
-<a href="/">Voltar</a>
+<a href="/dashboard">Voltar</a>
 
 </body>
 </html>
