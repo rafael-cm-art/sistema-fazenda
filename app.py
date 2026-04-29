@@ -3,26 +3,20 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-import sqlite3
-
-conn.commit()
-conn.close()
 app.secret_key = "123456"
-
 
 PRECO_LITRO = 2.5
 
-
-# ---------------- BANCO ----------------
 def conectar():
     return sqlite3.connect("banco.db")
 
 
-# cria tabelas automaticamente
+# ---------------- BANCO ----------------
 def criar_tabelas():
     conn = conectar()
     cursor = conn.cursor()
 
+    # FUNCIONÁRIOS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS funcionarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,11 +26,30 @@ def criar_tabelas():
     )
     """)
 
+    # ANIMAIS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS animais (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT,
+        tipo TEXT,
+        brinco TEXT,
+        sexo TEXT
+    )
+    """)
+
+    # ANOTAÇÕES
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS anotacoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        animal_id INTEGER,
+        texto TEXT,
+        data TEXT
+    )
+    """)
+
     conn.commit()
     conn.close()
 
-
-criar_tabelas()
 
 
 # ---------------- ROTA INICIAL ----------------
