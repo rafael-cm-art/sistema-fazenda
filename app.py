@@ -2,6 +2,11 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import os
 
+import os
+
+if os.path.exists("banco.db"):
+    os.remove("banco.db")
+
 app = Flask(__name__)
 import sqlite3
 
