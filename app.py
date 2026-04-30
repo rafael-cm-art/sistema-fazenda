@@ -185,8 +185,8 @@ def dashboard():
     cursor = conn.cursor()
 
     try:
-    cursor.execute("SELECT data, litros FROM leite")
-    dados = cursor.fetchall()
+        cursor.execute("SELECT data, litros FROM leite")
+        dados = cursor.fetchall()
 except:
     dados = []
 
