@@ -2,28 +2,10 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import os
 
-import os
-
-if os.path.exists("banco.db"):
-    os.remove("banco.db")
-
 app = Flask(__name__)
 import sqlite3
 
-conn = sqlite3.connect("banco.db")
-cursor = conn.cursor()
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS anotacoes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    animal_id INTEGER,
-    texto TEXT,
-    data TEXT
-)
-""")
-
-conn.commit()
-conn.close()
 app.secret_key = "123456"
 
 PRECO_LITRO = 2.5
@@ -39,12 +21,22 @@ def criar_tabelas():
     conn = conectar()
     cursor = conn.cursor()
 
+    # FUNCIONÁRIOS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS funcionarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
         usuario TEXT,
         senha TEXT
+    )
+    """)
+
+    # ANIMAIS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS animais (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT,
+        tipo TEXT
     )
     """)
 
@@ -192,8 +184,11 @@ def dashboard():
     conn = conectar()
     cursor = conn.cursor()
 
+    try:
     cursor.execute("SELECT data, litros FROM leite")
     dados = cursor.fetchall()
+except:
+    dados = []
 
     total_leite = sum([d[1] for d in dados])
     lucro = total_leite * PRECO_LITRO

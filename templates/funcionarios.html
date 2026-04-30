@@ -1,6 +1,6 @@
 <h2>Funcionários</h2>
 
-{% if session["usuario"] == "admin" %}
+{% if session.get("usuario") == "admin" %}
 <form method="POST">
     Nome: <input name="nome"><br>
     Usuário: <input name="usuario"><br>
@@ -18,7 +18,7 @@
     <li>
         {{ f[1] }} - {{ f[2] }}
 
-        {% if session["usuario"] == "admin" %}
+        {% if session.get("usuario") == "admin" %}
         <a href="/excluir_funcionario/{{ f[0] }}" 
            onclick="return confirm('Tem certeza que deseja excluir?')">
            ❌ Excluir
