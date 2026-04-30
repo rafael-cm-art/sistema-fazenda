@@ -21,7 +21,6 @@ def criar_tabelas():
     conn = conectar()
     cursor = conn.cursor()
 
-    # FUNCIONÁRIOS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS funcionarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +30,6 @@ def criar_tabelas():
     )
     """)
 
-    # ANIMAIS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS animais (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,6 +37,15 @@ def criar_tabelas():
         tipo TEXT,
         brinco TEXT,
         sexo TEXT
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS anotacoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        animal_id INTEGER,
+        texto TEXT,
+        data TEXT
     )
     """)
 
@@ -176,11 +183,15 @@ def excluir(id):
     conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
-    # apaga anotações do animal primeiro
-    cursor.execute("DELETE FROM anotacoes WHERE animal_id = ?", (id,))
+    try:
+        cursor.execute("DELETE FROM anotacoes WHERE animal_id = ?", (id,))
+    except:
+        pass
 
-    # depois apaga o animal
-    cursor.execute("DELETE FROM animais WHERE id = ?", (id,))
+    try:
+        cursor.execute("DELETE FROM animais WHERE id = ?", (id,))
+    except:
+        pass
 
     conn.commit()
     conn.close()
