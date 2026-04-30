@@ -36,7 +36,9 @@ def criar_tabelas():
     CREATE TABLE IF NOT EXISTS animais (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
-        tipo TEXT
+        tipo TEXT,
+        brinco TEXT,
+        sexo TEXT
     )
     """)
 
@@ -92,10 +94,11 @@ def cadastro():
     conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
+    # ANIMAIS
     cursor.execute("SELECT * FROM animais")
     animais = cursor.fetchall()
 
-    # evita erro se tabela ainda não existir
+    # ANOTAÇÕES
     try:
         cursor.execute("SELECT * FROM anotacoes")
         anotacoes = cursor.fetchall()
@@ -104,7 +107,11 @@ def cadastro():
 
     conn.close()
 
-    return render_template("cadastro.html", animais=animais, anotacoes=anotacoes)
+    return render_template(
+        "cadastro.html",
+        animais=animais,
+        anotacoes=anotacoes
+    )
 
 from datetime import datetime
 
@@ -128,16 +135,18 @@ def anotar(animal_id):
 
 @app.route("/salvar", methods=["POST"])
 def salvar():
-    conn = conectar()
+    conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
     nome = request.form["nome"]
     tipo = request.form["tipo"]
+    brinco = request.form["brinco"]
+    sexo = request.form["sexo"]
 
     cursor.execute("""
-        INSERT INTO animais (nome, tipo)
-        VALUES (?, ?)
-    """, (nome, tipo))
+        INSERT INTO animais (nome, tipo, brinco, sexo)
+        VALUES (?, ?, ?, ?)
+    """, (nome, tipo, brinco, sexo))
 
     conn.commit()
     conn.close()
