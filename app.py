@@ -13,7 +13,7 @@ PRECO_LITRO = 2.5
 
 # ---------------- BANCO ----------------
 def conectar():
-    return sqlite3.connect("banco.db")
+    return sqlite3.connect("banco2.db")
 
 
 # cria tabelas automaticamente
@@ -98,7 +98,7 @@ def login():
 # ---------------- DASHBOARD ----------------
 @app.route("/cadastro")
 def cadastro():
-    conn = sqlite3.connect("banco.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     # ANIMAIS (protege erro de tabela inexistente)
@@ -127,7 +127,7 @@ from datetime import datetime
 
 @app.route("/anotar/<int:animal_id>", methods=["POST"])
 def anotar(animal_id):
-    conn = sqlite3.connect("banco.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     texto = request.form["texto"]
@@ -145,7 +145,7 @@ def anotar(animal_id):
 
 @app.route("/salvar", methods=["POST"])
 def salvar():
-    conn = sqlite3.connect("banco.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     nome = request.form.get("nome")
@@ -168,7 +168,7 @@ def excluir_funcionario(id):
     if session.get("usuario") != "admin":
         return "Acesso negado"
 
-    conn = sqlite3.connect("banco.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM funcionarios WHERE id = ?", (id,))
@@ -180,7 +180,7 @@ def excluir_funcionario(id):
 
 @app.route("/excluir/<int:id>")
 def excluir(id):
-    conn = sqlite3.connect("banco.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     try:
@@ -236,7 +236,7 @@ def funcionarios():
     if "usuario" not in session:
         return redirect("/login")
 
-    conn = sqlite3.connect("banco.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     if request.method == "POST":
