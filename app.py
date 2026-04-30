@@ -141,10 +141,10 @@ def salvar():
     conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
-    nome = request.form["nome"]
-    tipo = request.form["tipo"]
-    brinco = request.form["brinco"]
-    sexo = request.form["sexo"]
+    nome = request.form.get("nome")
+    tipo = request.form.get("tipo")
+    brinco = request.form.get("brinco", "")
+    sexo = request.form.get("sexo", "")
 
     cursor.execute("""
         INSERT INTO animais (nome, tipo, brinco, sexo)
