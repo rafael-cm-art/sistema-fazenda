@@ -187,8 +187,8 @@ def dashboard():
     try:
         cursor.execute("SELECT data, litros FROM leite")
         dados = cursor.fetchall()
-except:
-    dados = []
+    except:
+        dados = []
 
     total_leite = sum([d[1] for d in dados])
     lucro = total_leite * PRECO_LITRO
