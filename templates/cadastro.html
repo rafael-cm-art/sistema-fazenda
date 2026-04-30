@@ -29,9 +29,10 @@
     <li>
         <b>{{ animal[1] if animal|length > 1 else "" }}</b> 
         ({{ animal[2] if animal|length > 2 else "" }})
+
         <a href="/excluir/{{ animal[0] }}" onclick="return confirm('Tem certeza?')">❌ Excluir</a>
 
-        <!-- FORM DE ANOTAÇÃO (AGORA NO LUGAR CERTO) -->
+        <!-- FORM DE ANOTAÇÃO -->
         <form action="/anotar/{{ animal[0] }}" method="post">
             <input name="texto" placeholder="Ex: morreu, doente...">
             <button>Salvar</button>
@@ -39,7 +40,7 @@
 
         <!-- LISTA DE ANOTAÇÕES -->
         <ul>
-        {% for anot in anotacoes if anotacoes else [] %}
+        {% for anot in anotacoes %}
             {% if anot[1] == animal[0] %}
                 <li>{{ anot[3] }} - {{ anot[2] }}</li>
             {% endif %}

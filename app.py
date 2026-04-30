@@ -94,11 +94,14 @@ def cadastro():
     conn = sqlite3.connect("banco.db")
     cursor = conn.cursor()
 
-    # ANIMAIS
-    cursor.execute("SELECT * FROM animais")
-    animais = cursor.fetchall()
+    # ANIMAIS (protege erro de tabela inexistente)
+    try:
+        cursor.execute("SELECT * FROM animais")
+        animais = cursor.fetchall()
+    except:
+        animais = []
 
-    # ANOTAÇÕES
+    # ANOTAÇÕES (protege também)
     try:
         cursor.execute("SELECT * FROM anotacoes")
         anotacoes = cursor.fetchall()
