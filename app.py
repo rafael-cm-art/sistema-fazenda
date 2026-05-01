@@ -26,7 +26,15 @@ def criar_tabelas():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
         usuario TEXT,
-        senha TEXT
+        senha TEXT,
+        fazenda_id INTEGER
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS fazendas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT
     )
     """)
 
@@ -36,7 +44,8 @@ def criar_tabelas():
         nome TEXT,
         tipo TEXT,
         brinco TEXT,
-        sexo TEXT
+        sexo TEXT,
+        fazenda_id INTEGER
     )
     """)
 
@@ -86,11 +95,16 @@ def login():
         user = cursor.fetchone()
         conn.close()
 
-        if user:
-            session["usuario"] = usuario
-            return redirect("/dashboard")
-        else:
-            return "Usuário ou senha inválidos"
+    if user:
+        session["usuario"] = usuario
+
+    # 🔥 NOVO (guarda a fazenda)
+    if len(user) > 4:
+        session["fazenda_id"] = user[4]
+    else:
+        session["fazenda_id"] = 1  # padrão temporário
+
+    return redirect("/dashboard")
 
     return render_template("login.html")
 
@@ -103,7 +117,10 @@ def cadastro():
 
     # ANIMAIS (protege erro de tabela inexistente)
     try:
-        cursor.execute("SELECT * FROM animais")
+        cursor.execute(
+            "SELECT * FROM animais WHERE fazenda_id = ?",
+            (session.get("fazenda_id", 1),)
+        )
         animais = cursor.fetchall()
     except:
         animais = []
@@ -154,9 +171,9 @@ def salvar():
     sexo = request.form.get("sexo", "")
 
     cursor.execute("""
-        INSERT INTO animais (nome, tipo, brinco, sexo)
-        VALUES (?, ?, ?, ?)
-    """, (nome, tipo, brinco, sexo))
+        INSERT INTO animais (nome, tipo, brinco, sexo, fazenda_id)
+        VALUES (?, ?, ?, ?, ?)
+        """, (nome, tipo, brinco, sexo, session["fazenda_id"]))
 
     conn.commit()
     conn.close()
@@ -255,7 +272,10 @@ def funcionarios():
 
         conn.commit()
 
-    cursor.execute("SELECT * FROM funcionarios")
+    cursor.execute(
+        "SELECT * FROM funcionarios WHERE fazenda_id = ?",
+        (session.get("fazenda_id", 1),)
+    )
     dados = cursor.fetchall()
 
     conn.close()
