@@ -48,9 +48,10 @@
 </div>
 
 <script>
-const dados = {{ dados|tojson if dados else [] }};
-const labels = dados.map(d => d[0]);
-const valores = dados.map(d => d[1]);
+     const dados = {{ (dados if dados else []) | tojson }};
+     const labels = dados.map(d => d[0]);
+     const valores = dados.map(d => d[1]);
+</script>
 
 new Chart(document.getElementById("grafico"), {
     type: "line",

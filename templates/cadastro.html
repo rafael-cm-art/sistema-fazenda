@@ -17,6 +17,16 @@
         <option value="corte">Corte</option>
     </select><br>
 
+    <!-- 🔥 NOVO CAMPO -->
+    Brinco: <input name="brinco"><br>
+
+    <!-- 🔥 NOVO CAMPO -->
+    Sexo:
+    <select name="sexo">
+        <option value="M">Macho</option>
+        <option value="F">Fêmea</option>
+    </select><br>
+
     <button>Salvar</button>
 </form>
 
@@ -29,6 +39,10 @@
     <li>
         <b>{{ animal[1] if animal|length > 1 else "" }}</b> 
         ({{ animal[2] if animal|length > 2 else "" }})
+
+        <!-- 🔥 MOSTRAR BRINCO E SEXO -->
+        - 🏷️ {{ animal[3] if animal|length > 3 else "" }}
+        - ⚥ {{ animal[4] if animal|length > 4 else "" }}
 
         <a href="/excluir/{{ animal[0] }}" onclick="return confirm('Tem certeza?')">❌ Excluir</a>
 
