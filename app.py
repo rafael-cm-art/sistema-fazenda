@@ -13,7 +13,7 @@ PRECO_LITRO = 2.5
 
 # ---------------- BANCO ----------------
 def conectar():
-    return sqlite3.connect("banco3.db")
+    return sqlite3.connect("banco2.db")
 
 
 # cria tabelas automaticamente
@@ -26,15 +26,7 @@ def criar_tabelas():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
         usuario TEXT,
-        senha TEXT,
-        fazenda_id INTEGER
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS fazendas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT
+        senha TEXT
     )
     """)
 
@@ -44,8 +36,7 @@ def criar_tabelas():
         nome TEXT,
         tipo TEXT,
         brinco TEXT,
-        sexo TEXT,
-        fazenda_id INTEGER
+        sexo TEXT
     )
     """)
 
@@ -95,16 +86,11 @@ def login():
         user = cursor.fetchone()
         conn.close()
 
-    if user:
-        session["usuario"] = usuario
-
-    # 🔥 NOVO (guarda a fazenda)
-    if len(user) > 4:
-        session["fazenda_id"] = user[4]
-    else:
-        session["fazenda_id"] = 1  # padrão temporário
-
-    return redirect("/dashboard")
+        if user:
+            session["usuario"] = usuario
+            return redirect("/dashboard")
+        else:
+            return "Usuário ou senha inválidos"
 
     return render_template("login.html")
 
@@ -112,15 +98,12 @@ def login():
 # ---------------- DASHBOARD ----------------
 @app.route("/cadastro")
 def cadastro():
-    conn = sqlite3.connect("banco3.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     # ANIMAIS (protege erro de tabela inexistente)
     try:
-        cursor.execute(
-            "SELECT * FROM animais WHERE fazenda_id = ?",
-            (session.get("fazenda_id", 1),)
-        )
+        cursor.execute("SELECT * FROM animais")
         animais = cursor.fetchall()
     except:
         animais = []
@@ -144,7 +127,7 @@ from datetime import datetime
 
 @app.route("/anotar/<int:animal_id>", methods=["POST"])
 def anotar(animal_id):
-    conn = sqlite3.connect("banco3.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     texto = request.form["texto"]
@@ -162,7 +145,7 @@ def anotar(animal_id):
 
 @app.route("/salvar", methods=["POST"])
 def salvar():
-    conn = sqlite3.connect("banco3.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     nome = request.form.get("nome")
@@ -171,9 +154,9 @@ def salvar():
     sexo = request.form.get("sexo", "")
 
     cursor.execute("""
-        INSERT INTO animais (nome, tipo, brinco, sexo, fazenda_id)
-        VALUES (?, ?, ?, ?, ?)
-        """, (nome, tipo, brinco, sexo, session["fazenda_id"]))
+        INSERT INTO animais (nome, tipo, brinco, sexo)
+        VALUES (?, ?, ?, ?)
+    """, (nome, tipo, brinco, sexo))
 
     conn.commit()
     conn.close()
@@ -185,7 +168,7 @@ def excluir_funcionario(id):
     if session.get("usuario") != "admin":
         return "Acesso negado"
 
-    conn = sqlite3.connect("banco3.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM funcionarios WHERE id = ?", (id,))
@@ -197,7 +180,7 @@ def excluir_funcionario(id):
 
 @app.route("/excluir/<int:id>")
 def excluir(id):
-    conn = sqlite3.connect("banco3.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     try:
@@ -253,7 +236,7 @@ def funcionarios():
     if "usuario" not in session:
         return redirect("/login")
 
-    conn = sqlite3.connect("banco3.db")
+    conn = sqlite3.connect("banco2.db")
     cursor = conn.cursor()
 
     if request.method == "POST":
@@ -272,10 +255,7 @@ def funcionarios():
 
         conn.commit()
 
-    cursor.execute(
-        "SELECT * FROM funcionarios WHERE fazenda_id = ?",
-        (session.get("fazenda_id", 1),)
-    )
+    cursor.execute("SELECT * FROM funcionarios")
     dados = cursor.fetchall()
 
     conn.close()
