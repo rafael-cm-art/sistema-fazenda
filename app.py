@@ -65,7 +65,7 @@ def home():
 # ---------------- LOGIN (SIMPLES POR ENQUANTO) ----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
+        if request.method == "POST":
         usuario = request.form["usuario"]
         senha = request.form["senha"]
 
